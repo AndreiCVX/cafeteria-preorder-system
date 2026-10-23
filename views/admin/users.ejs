@@ -1,0 +1,41 @@
+<%- include('../partials/header', { title: 'Users' }) %>
+<div class="page-head">
+  <div><h1>Users</h1><p>Change roles or deactivate accounts. You can't change your own account here.</p></div>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      <% users.forEach(function(u){ %>
+      <tr>
+        <td><strong><%= u.name %></strong></td>
+        <td><%= u.email %></td>
+        <td>
+          <% if (u.id === currentUser.id) { %>
+            <span class="pill pill-on"><%= u.role %> (you)</span>
+          <% } else { %>
+            <form class="inline-role" method="POST" action="/admin/users/<%= u.id %>/role">
+              <label class="sr-only" for="role-<%= u.id %>">Role for <%= u.name %></label>
+              <select id="role-<%= u.id %>" name="role">
+                <% ['customer','staff','admin'].forEach(function(r){ %>
+                  <option value="<%= r %>" <%= u.role === r ? 'selected' : '' %>><%= r %></option>
+                <% }) %>
+              </select>
+              <button class="btn btn-ghost btn-sm">Save role</button>
+            </form>
+          <% } %>
+        </td>
+        <td><span class="pill <%= u.is_active ? 'pill-on' : 'pill-off' %>"><%= u.is_active ? 'Active' : 'Deactivated' %></span></td>
+        <td>
+          <% if (u.id !== currentUser.id) { %>
+            <form method="POST" action="/admin/users/<%= u.id %>/toggle" data-confirm="<%= u.is_active ? 'Deactivate' : 'Reactivate' %> <%= u.name %>?">
+              <button class="btn btn-sm <%= u.is_active ? 'btn-danger' : 'btn-ghost' %>"><%= u.is_active ? 'Deactivate' : 'Reactivate' %></button>
+            </form>
+          <% } %>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<%- include('../partials/footer') %>

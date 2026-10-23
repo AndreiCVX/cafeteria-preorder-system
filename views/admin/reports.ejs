@@ -1,0 +1,31 @@
+<%- include('../partials/header', { title: 'Sales' }) %>
+<% const maxQty = top.reduce(function(m, t){ return Math.max(m, Number(t.qty)); }, 1); %>
+<div class="page-head">
+  <div><h1>Sales</h1><p>Cancelled orders are not counted.</p></div>
+</div>
+<form class="date-form" method="GET" action="/admin/reports">
+  <div class="field"><label for="from">From</label><input id="from" type="date" name="from" value="<%= from %>"></div>
+  <div class="field"><label for="to">To</label><input id="to" type="date" name="to" value="<%= to %>"></div>
+  <button class="btn btn-dark">Show report</button>
+</form>
+
+<div class="stats">
+  <div class="stat"><b><%= summary.total_orders %></b><span>Orders placed</span></div>
+  <div class="stat"><b><%= peso(summary.total_sales) %></b><span>Total sales</span></div>
+</div>
+
+<h2 style="margin-bottom:1.25rem">Best sellers</h2>
+<% if (!top.length) { %>
+  <div class="empty"><h2>No orders in this period</h2><p>Pick a wider date range to see sales.</p></div>
+<% } else { %>
+  <ul class="bars">
+    <% top.forEach(function(t){ %>
+      <li>
+        <span><strong><%= t.name %></strong></span>
+        <span class="bar" role="img" aria-label="<%= t.qty %> sold"><span data-width="<%= Math.round(Number(t.qty) / maxQty * 100) %>"></span></span>
+        <span class="val"><%= t.qty %> sold &middot; <%= peso(t.revenue) %></span>
+      </li>
+    <% }) %>
+  </ul>
+<% } %>
+<%- include('../partials/footer') %>
