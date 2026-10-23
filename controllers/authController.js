@@ -7,7 +7,11 @@ exports.home = (req, res) => {
   res.redirect('/login');
 };
 
-exports.dashboard = (req, res) => res.render('dashboard');
+exports.dashboard = (req, res) => {
+  const role = req.session.user.role;
+  if (role === 'staff' || role === 'admin') return res.redirect('/staff/orders');
+  res.redirect('/menu');
+};
 
 exports.showRegister = (req, res) => res.render('auth/register');
 
