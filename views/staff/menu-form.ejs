@@ -1,0 +1,28 @@
+<%- include('../partials/header', { title: item ? 'Edit menu item' : 'Add menu item' }) %>
+<% const val = function(k){ return (old && old[k] !== undefined) ? old[k] : (item ? item[k] : ''); }; %>
+<div class="page-head"><h1><%= item ? 'Edit menu item' : 'Add menu item' %></h1></div>
+<section class="panel form-panel">
+  <form method="POST" action="<%= action %>" novalidate>
+    <div class="field">
+      <label for="name">Name</label>
+      <input id="name" type="text" name="name" value="<%= val('name') %>" required>
+    </div>
+    <div class="field">
+      <label for="description">Description <span class="muted">(optional)</span></label>
+      <input id="description" type="text" name="description" maxlength="255" value="<%= val('description') %>">
+    </div>
+    <div class="field">
+      <label for="category">Category</label>
+      <input id="category" type="text" name="category" value="<%= val('category') %>" placeholder="Meals, Snacks, Drinks" required>
+    </div>
+    <div class="field">
+      <label for="price">Price in pesos</label>
+      <input id="price" type="number" name="price" step="0.01" min="0.01" value="<%= val('price') %>" required>
+    </div>
+    <div class="actions">
+      <button class="btn btn-dark">Save item</button>
+      <a href="/staff/menu" class="btn btn-ghost">Cancel</a>
+    </div>
+  </form>
+</section>
+<%- include('../partials/footer') %>

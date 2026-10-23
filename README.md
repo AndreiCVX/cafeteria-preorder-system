@@ -1,3 +1,16 @@
+# Cafeteria Pre-order System: Stage 3 of 4 (Staff: Menu Management and Order Queue)
+
+Midterm Project, Campus System Round 1 (Node.js + Express + EJS + MySQL/XAMPP).
+This folder is a complete, runnable snapshot of the project at the end of stage 3.
+
+## What works in this stage
+- Everything from stage 2
+- Staff: add, edit, delete, sold-out toggle for menu items; order queue; status steps pending > preparing > ready > completed
+- Full customer-to-staff flow: place an order, staff prepares it, customer sees the new status
+- Staff and admin land on `/staff/orders` after login
+
+## Not built yet (arrives in the next stages)
+- Admin user management and sales report (stage 4)
 # Cafeteria Pre-order System: Stage 2 of 4 (Customer Ordering)
 
 Midterm Project, Campus System Round 1 (Node.js + Express + EJS + MySQL/XAMPP).

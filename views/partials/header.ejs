@@ -25,6 +25,10 @@
         <a href="/cart" class="<%= path === '/cart' ? 'on' : '' %>">My order<% if (cartCount > 0) { %><span class="count"><%= cartCount %></span><% } %></a>
         <a href="/orders" class="<%= path === '/orders' ? 'on' : '' %>">My orders</a>
       <% } %>
+      <% if (currentUser && (currentUser.role === 'staff' || currentUser.role === 'admin')) { %>
+        <a href="/staff/orders" class="<%= path.indexOf('/staff/orders') === 0 ? 'on' : '' %>">Orders</a>
+        <a href="/staff/menu" class="<%= path.indexOf('/staff/menu') === 0 ? 'on' : '' %>">Menu items</a>
+      <% } %>
     </nav>
     <div class="who">
       <% if (currentUser) { %>

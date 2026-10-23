@@ -1,0 +1,34 @@
+<% const actionLabel = { preparing: 'Start preparing', ready: 'Mark ready', completed: 'Mark picked up', cancelled: 'Cancel order' }; %>
+<div class="ticket-wrap">
+  <article class="ticket">
+    <div class="ticket-head">
+      <div>
+        <h3>Order #<%= o.id %></h3>
+        <span class="who-for"><%= o.customer_name %></span>
+      </div>
+      <div class="pickup"><b><%= pickupTime(o.pickup_time) %></b><span><%= pickupDay(o.pickup_time) %></span></div>
+    </div>
+    <ul class="slip-lines">
+      <% (items[o.id] || []).forEach(function(i){ %>
+        <li><span class="qty"><%= i.quantity %>&times;</span><span><%= i.name %></span></li>
+      <% }) %>
+    </ul>
+    <% if (o.notes) { %><p class="slip-note">Note: <%= o.notes %></p><% } %>
+    <div class="slip-foot">
+      <% if (o.status === 'completed' || o.status === 'cancelled') { %>
+        <% if (o.status === 'cancelled') { %><span class="stamp stamp-cancelled">Cancelled</span><% } else { %><span class="stamp stamp-completed">Picked up</span><% } %>
+        <strong><%= peso(o.total) %></strong>
+      <% } else { %>
+        <strong><%= peso(o.total) %></strong>
+        <div class="actions">
+          <% transitions[o.status].forEach(function(next){ %>
+            <form method="POST" action="/staff/orders/<%= o.id %>/status" <% if (next === 'cancelled') { %>data-confirm="Cancel order #<%= o.id %>?"<% } %>>
+              <input type="hidden" name="status" value="<%= next %>">
+              <button class="btn btn-sm <%= next === 'cancelled' ? 'btn-danger' : 'btn-primary' %>"><%= actionLabel[next] %></button>
+            </form>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+  </article>
+</div>

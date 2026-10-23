@@ -1,0 +1,41 @@
+<%- include('../partials/header', { title: 'Orders' }) %>
+<% const cols = [['pending','Waiting'],['preparing','In the kitchen'],['ready','Ready for pickup']]; %>
+<% const chipList = [['','All open'],['pending','Waiting'],['preparing','In the kitchen'],['ready','Ready'],['completed','Picked up'],['cancelled','Cancelled']]; %>
+<div class="page-head">
+  <div><h1>Orders</h1><p>Sorted by pickup time. Move each order along as you work on it.</p></div>
+  <div class="chips" role="group" aria-label="Filter orders">
+    <% chipList.forEach(function(c){ %>
+      <a class="chip <%= status === c[0] ? 'on' : '' %>" href="/staff/orders<%= c[0] ? '?status=' + c[0] : '' %>"><%= c[1] %></a>
+    <% }) %>
+  </div>
+</div>
+
+<% if (!status) { %>
+  <div class="board">
+    <% cols.forEach(function(c){ %>
+      <% const list = orders.filter(function(o){ return o.status === c[0]; }); %>
+      <section aria-label="<%= c[1] %>">
+        <div class="col-head"><h2><%= c[1] %></h2><span class="n"><%= list.length %></span></div>
+        <div class="col-stack">
+          <% if (!list.length) { %><p class="col-empty">No orders here right now.</p><% } %>
+          <% list.forEach(function(o){ %><%- include('../partials/staff-ticket', { o: o }) %><% }) %>
+        </div>
+      </section>
+    <% }) %>
+  </div>
+  <% const done = orders.filter(function(o){ return o.status === 'completed' || o.status === 'cancelled'; }); %>
+  <% if (done.length) { %>
+    <details class="more">
+      <summary>Picked up and cancelled (<%= done.length %>)</summary>
+      <div class="tickets">
+        <% done.forEach(function(o){ %><%- include('../partials/staff-ticket', { o: o }) %><% }) %>
+      </div>
+    </details>
+  <% } %>
+<% } else { %>
+  <% if (!orders.length) { %><div class="empty"><h2>No orders with this status</h2><p>Choose another filter above.</p></div><% } %>
+  <div class="tickets">
+    <% orders.forEach(function(o){ %><%- include('../partials/staff-ticket', { o: o }) %><% }) %>
+  </div>
+<% } %>
+<%- include('../partials/footer') %>

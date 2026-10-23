@@ -105,3 +105,29 @@ exports.cancel = async (req, res, next) => {
     res.redirect('/orders');
   } catch (err) { next(err); }
 };
+
+// ---------- Staff queue ----------
+exports.queue = async (req, res, next) => {
+  try {
+    const status = ['pending', 'preparing', 'ready', 'completed', 'cancelled'].includes(req.query.status)
+      ? req.query.status : '';
+    const orders = await orderModel.listAll(status);
+    const items = await orderModel.itemsForOrders(orders.map((o) => o.id));
+    res.render('staff/orders-queue', { orders, items, status, transitions: orderModel.TRANSITIONS });
+  } catch (err) { next(err); }
+};
+
+exports.updateStatus = async (req, res, next) => {
+  try {
+    const order = await orderModel.findById(req.params.id);
+    const next_ = req.body.status;
+    if (!order) return res.status(404).render('error', { code: 404, message: 'Order not found.' });
+    if (!orderModel.TRANSITIONS[order.status].includes(next_)) {
+      req.session.flash = { type: 'danger', text: `Cannot change an order from ${order.status} to ${next_}.` };
+    } else {
+      await orderModel.updateStatus(order.id, next_);
+      req.session.flash = { type: 'success', text: `Order #${order.id} is now ${next_}.` };
+    }
+    res.redirect('/staff/orders');
+  } catch (err) { next(err); }
+};

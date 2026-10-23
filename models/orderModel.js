@@ -1,5 +1,15 @@
 const db = require('../config/db');
 
+// Allowed status changes (staff)
+const TRANSITIONS = {
+  pending: ['preparing', 'cancelled'],
+  preparing: ['ready', 'cancelled'],
+  ready: ['completed'],
+  completed: [],
+  cancelled: []
+};
+exports.TRANSITIONS = TRANSITIONS;
+
 // items: [{ menu_item_id, quantity, unit_price }]
 exports.create = async (userId, pickupTime, notes, items) => {
   const conn = await db.getConnection();
@@ -31,6 +41,15 @@ exports.listByUser = async (userId) => {
   return rows;
 };
 
+exports.listAll = async (statusFilter = '') => {
+  let sql = `SELECT o.*, u.name AS customer_name FROM orders o JOIN users u ON u.id = o.user_id`;
+  const params = [];
+  if (statusFilter) { sql += ' WHERE o.status = ?'; params.push(statusFilter); }
+  sql += ' ORDER BY o.pickup_time ASC';
+  const [rows] = await db.query(sql, params);
+  return rows;
+};
+
 exports.itemsForOrders = async (orderIds) => {
   if (!orderIds.length) return {};
   const [rows] = await db.query(
@@ -55,3 +74,5 @@ exports.cancelOwnPending = async (orderId, userId) => {
   );
   return r.affectedRows === 1;
 };
+
+exports.updateStatus = (id, status) => db.query('UPDATE orders SET status = ? WHERE id = ?', [status, id]);
