@@ -1,0 +1,59 @@
+<%- include('../partials/header', { title: 'My orders' }) %>
+<% const steps = [['pending','Placed'],['preparing','Preparing'],['ready','Ready'],['completed','Picked up']]; %>
+<div class="page-head">
+  <div><h1>My orders</h1><p>Follow each order from the kitchen to the counter.</p></div>
+  <a class="btn btn-dark" href="/menu">Order something</a>
+</div>
+
+<% if (!orders.length) { %>
+  <div class="empty">
+    <h2>No orders yet</h2>
+    <p>When you place an order it will appear here with its live status.</p>
+    <a class="btn btn-dark" href="/menu">Browse the menu</a>
+  </div>
+<% } %>
+
+<div class="tickets">
+<% orders.forEach(function(o){ %>
+  <% const idx = steps.findIndex(function(s){ return s[0] === o.status; }); %>
+  <div class="ticket-wrap">
+    <article class="ticket">
+      <div class="ticket-head">
+        <div>
+          <h3>Order #<%= o.id %></h3>
+          <span class="who-for">Placed <%= o.created_at.slice(0, 16) %></span>
+        </div>
+        <div class="pickup"><b><%= pickupTime(o.pickup_time) %></b><span><%= pickupDay(o.pickup_time) %></span></div>
+      </div>
+
+      <% if (o.status === 'cancelled') { %>
+        <p style="margin-bottom:1rem"><span class="stamp stamp-cancelled">Cancelled</span></p>
+      <% } else { %>
+        <ol class="track" aria-label="Order progress">
+          <% steps.forEach(function(s, n){ %>
+            <li class="<%= n < idx ? 'done' : (n === idx ? 'now' : '') %>"><%= s[1] %></li>
+          <% }) %>
+        </ol>
+      <% } %>
+
+      <ul class="slip-lines">
+        <% (items[o.id] || []).forEach(function(i){ %>
+          <li><span class="qty"><%= i.quantity %>&times;</span><span><%= i.name %></span><span class="leader"></span><span><%= peso(i.unit_price * i.quantity) %></span></li>
+        <% }) %>
+      </ul>
+      <% if (o.notes) { %><p class="slip-note">Note: <%= o.notes %></p><% } %>
+
+      <div class="slip-total"><span>Total</span><b><%= peso(o.total) %></b></div>
+      <% if (o.status === 'pending') { %>
+        <div class="slip-foot">
+          <span class="muted small">You can cancel until the kitchen starts.</span>
+          <form method="POST" action="/orders/<%= o.id %>/cancel" data-confirm="Cancel order #<%= o.id %>?">
+            <button class="btn btn-danger btn-sm">Cancel order</button>
+          </form>
+        </div>
+      <% } %>
+    </article>
+  </div>
+<% }) %>
+</div>
+<%- include('../partials/footer') %>
