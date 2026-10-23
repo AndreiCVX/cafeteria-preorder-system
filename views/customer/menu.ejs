@@ -1,0 +1,68 @@
+<%- include('../partials/header', { title: 'Menu' }) %>
+<% const isCustomer = currentUser.role === 'customer'; %>
+<% const qs = function(cat){ const p = []; if (cat) p.push('category=' + encodeURIComponent(cat)); if (search) p.push('q=' + encodeURIComponent(search)); return '/menu' + (p.length ? '?' + p.join('&') : ''); }; %>
+<div class="page-head">
+  <div>
+    <h1>Today's menu</h1>
+    <p>Open <%= hourLabel(openHour) %> to <%= hourLabel(closeHour) %>. Add what you want, choose a pickup time, and pay at the counter.</p>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="chips" role="group" aria-label="Filter by category">
+    <a class="chip <%= !category ? 'on' : '' %>" href="<%= qs('') %>">All</a>
+    <% categories.forEach(function(c){ %>
+      <a class="chip <%= c === category ? 'on' : '' %>" href="<%= qs(c) %>"><%= c %></a>
+    <% }) %>
+  </div>
+  <form class="search" method="GET" action="/menu" role="search">
+    <% if (category) { %><input type="hidden" name="category" value="<%= category %>"><% } %>
+    <label class="sr-only" for="q">Search the menu</label>
+    <input id="q" type="search" name="q" placeholder="Search by dish name" value="<%= search %>">
+    <button class="btn btn-dark">Search</button>
+  </form>
+</div>
+
+<% if (!items.length) { %>
+  <div class="empty">
+    <h2>Nothing matches that search</h2>
+    <p>Try a different name, or clear the filters to see everything available today.</p>
+    <a class="btn btn-dark" href="/menu">Show the full menu</a>
+  </div>
+<% } %>
+
+<% const groups = {}; items.forEach(function(i){ (groups[i.category] = groups[i.category] || []).push(i); }); %>
+<% Object.keys(groups).forEach(function(cat){ %>
+  <section class="menu-group">
+    <h2><%= cat %> <small><%= groups[cat].length %> available</small></h2>
+    <ul class="dishes">
+      <% groups[cat].forEach(function(i){ %>
+        <li class="dish">
+          <div>
+            <div class="dish-line"><h3><%= i.name %></h3><span class="leader"></span><span class="price"><%= peso(i.price) %></span></div>
+            <% if (i.description) { %><p class="dish-desc"><%= i.description %></p><% } %>
+          </div>
+          <% if (isCustomer) { %>
+            <form class="dish-add" method="POST" action="/cart/add" data-keep-scroll>
+              <input type="hidden" name="menu_item_id" value="<%= i.id %>">
+              <div class="stepper">
+                <button type="button" data-step="-1" aria-label="One less">&minus;</button>
+                <input type="number" name="quantity" value="1" min="1" max="20" aria-label="Quantity of <%= i.name %>">
+                <button type="button" data-step="1" aria-label="One more">+</button>
+              </div>
+              <button class="btn btn-primary">Add to order</button>
+            </form>
+          <% } %>
+        </li>
+      <% }) %>
+    </ul>
+  </section>
+<% }) %>
+
+<% if (isCustomer && cartCount > 0) { %>
+  <a class="orderbar" href="/cart">
+    <span><%= cartCount %> <%= cartCount === 1 ? 'item' : 'items' %> in your order</span>
+    <strong>Review order</strong>
+  </a>
+<% } %>
+<%- include('../partials/footer') %>

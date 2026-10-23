@@ -1,0 +1,59 @@
+<%- include('../partials/header', { title: 'My order' }) %>
+<div class="page-head">
+  <div><h1>Your order</h1><p>Check your items, then pick a time to collect them.</p></div>
+</div>
+
+<% if (!lines.length) { %>
+  <div class="empty">
+    <h2>Your order is empty</h2>
+    <p>Pick something from today's menu and it will show up here.</p>
+    <a class="btn btn-dark" href="/menu">Browse the menu</a>
+  </div>
+<% } else { %>
+<div class="cart-grid">
+  <div class="ticket-wrap">
+    <article class="ticket">
+      <div class="ticket-head">
+        <div><h2>Order slip</h2><span class="who-for">for <%= currentUser.name %></span></div>
+      </div>
+      <ul class="slip-lines">
+        <% lines.forEach(function(l){ %>
+          <li>
+            <span class="qty"><%= l.quantity %>&times;</span>
+            <span><%= l.name %></span>
+            <span class="leader"></span>
+            <span><%= peso(l.subtotal) %></span>
+          </li>
+          <li style="margin-top:-.2rem; font-family:var(--body); font-size:.82rem; justify-content:space-between;">
+            <span class="muted"><%= peso(l.price) %> each<% if (!l.is_available) { %> &middot; <strong style="color:var(--chili)">sold out, please remove</strong><% } %></span>
+            <form method="POST" action="/cart/remove"><input type="hidden" name="menu_item_id" value="<%= l.id %>"><button class="link-btn">Remove</button></form>
+          </li>
+        <% }) %>
+      </ul>
+      <div class="slip-total"><span>Total to pay at pickup</span><b><%= peso(total) %></b></div>
+    </article>
+  </div>
+
+  <section class="panel">
+    <h2>When will you pick it up?</h2>
+    <p class="lead">Pickup is at the counter, <%= hourLabel(openHour) %> to <%= hourLabel(closeHour) %>. We need at least 10 minutes to prepare.</p>
+    <form method="POST" action="/orders" novalidate>
+      <div class="field">
+        <label for="pickup_time">Pickup date and time</label>
+        <input id="pickup_time" type="datetime-local" name="pickup_time" value="<%= old.pickup_time || '' %>" required>
+        <div class="quick" aria-label="Quick pickup times">
+          <button type="button" data-in-minutes="20">In 20 minutes</button>
+          <button type="button" data-in-minutes="30">In 30 minutes</button>
+          <button type="button" data-in-minutes="60">In 1 hour</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="notes">Notes for the kitchen <span class="muted">(optional)</span></label>
+        <input id="notes" type="text" name="notes" maxlength="255" placeholder="For example: no onions" value="<%= old.notes || '' %>">
+      </div>
+      <button class="btn btn-primary btn-block">Place pre-order</button>
+    </form>
+  </section>
+</div>
+<% } %>
+<%- include('../partials/footer') %>

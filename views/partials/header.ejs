@@ -20,6 +20,11 @@
       <span>Cafeteria<br>Pre-order</span>
     </a>
     <nav class="nav" aria-label="Main">
+      <% if (currentUser && currentUser.role === 'customer') { %>
+        <a href="/menu" class="<%= path === '/menu' ? 'on' : '' %>">Menu</a>
+        <a href="/cart" class="<%= path === '/cart' ? 'on' : '' %>">My order<% if (cartCount > 0) { %><span class="count"><%= cartCount %></span><% } %></a>
+        <a href="/orders" class="<%= path === '/orders' ? 'on' : '' %>">My orders</a>
+      <% } %>
     </nav>
     <div class="who">
       <% if (currentUser) { %>
