@@ -7,7 +7,10 @@ exports.home = (req, res) => {
   res.redirect('/login');
 };
 
-exports.dashboard = (req, res) => res.render('dashboard');
+exports.dashboard = (req, res) => {
+  if (req.session.user.role === 'customer') return res.redirect('/menu');
+  res.render('dashboard'); // staff/admin pages arrive in later stages
+};
 
 exports.showRegister = (req, res) => res.render('auth/register');
 
