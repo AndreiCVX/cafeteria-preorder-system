@@ -6,6 +6,7 @@ const session = require('express-session');
 const authRoutes = require('./routes/authRoutes');
 const menuRoutes = require('./routes/menuRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
@@ -60,6 +61,7 @@ app.use((req, res, next) => {
 app.use('/', authRoutes);
 app.use('/', menuRoutes);
 app.use('/', orderRoutes);
+app.use('/admin', adminRoutes);
 
 app.use((req, res) => {
   res.status(404).render('error', { code: 404, message: 'Page not found.' });

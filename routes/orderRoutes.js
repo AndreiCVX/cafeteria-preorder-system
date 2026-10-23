@@ -17,4 +17,3 @@ router.get('/staff/orders', staff, order.queue);
 router.post('/staff/orders/:id/status', staff, order.updateStatus);
 
 module.exports = router;
-module.exports = router;
