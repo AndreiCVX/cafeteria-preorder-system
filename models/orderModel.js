@@ -76,3 +76,17 @@ exports.cancelOwnPending = async (orderId, userId) => {
 };
 
 exports.updateStatus = (id, status) => db.query('UPDATE orders SET status = ? WHERE id = ?', [status, id]);
+
+exports.report = async (from, to) => {
+  const [[summary]] = await db.query(
+    `SELECT COUNT(*) AS total_orders, COALESCE(SUM(total), 0) AS total_sales
+     FROM orders WHERE status <> 'cancelled' AND DATE(created_at) BETWEEN ? AND ?`, [from, to]);
+  const [top] = await db.query(
+    `SELECT m.name, SUM(oi.quantity) AS qty, SUM(oi.quantity * oi.unit_price) AS revenue
+     FROM order_items oi
+     JOIN orders o ON o.id = oi.order_id
+     JOIN menu_items m ON m.id = oi.menu_item_id
+     WHERE o.status <> 'cancelled' AND DATE(o.created_at) BETWEEN ? AND ?
+     GROUP BY m.id, m.name ORDER BY qty DESC LIMIT 5`, [from, to]);
+  return { summary, top };
+};

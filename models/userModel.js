@@ -17,3 +17,13 @@ exports.create = async ({ name, email, passwordHash, role = 'customer' }) => {
   );
   return r.insertId;
 };
+
+exports.list = async () => {
+  const [rows] = await db.query(
+    'SELECT id, name, email, role, is_active, created_at FROM users ORDER BY created_at DESC'
+  );
+  return rows;
+};
+
+exports.setRole = (id, role) => db.query('UPDATE users SET role = ? WHERE id = ?', [role, id]);
+exports.setActive = (id, active) => db.query('UPDATE users SET is_active = ? WHERE id = ?', [active ? 1 : 0, id]);
