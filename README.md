@@ -11,6 +11,19 @@ This folder is a complete, runnable snapshot of the project at the end of stage 
 
 ## Not built yet (arrives in the next stages)
 - Admin user management and sales report (stage 4)
+# Cafeteria Pre-order System: Stage 2 of 4 (Customer Ordering)
+
+Midterm Project, Campus System Round 1 (Node.js + Express + EJS + MySQL/XAMPP).
+This folder is a complete, runnable snapshot of the project at the end of stage 2.
+
+## What works in this stage
+- Everything from stage 1
+- Customer: browse and search the menu, add to cart, choose a pickup time, place an order, order history, cancel a pending order
+- Customers land on `/menu` after login
+
+## Not built yet (arrives in the next stages)
+- Staff menu management and order queue (stage 3). Staff and admin still see the welcome page.
+- Admin pages (stage 4)
 
 ## Run it
 1. Start **MySQL** in the XAMPP Control Panel.
