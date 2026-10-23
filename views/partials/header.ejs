@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= typeof title !== 'undefined' ? title + ' | ' : '' %>Cafeteria Pre-order</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Courier+Prime:wght@400;700&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="/" aria-label="Cafeteria Pre-order home">
+      <svg viewBox="0 0 40 40" fill="none" stroke="#f2c12e" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M6 20h28c0 8-6 14-14 14S6 28 6 20z"/>
+        <path d="M14 14c-2-2 2-4 0-7M20 14c-2-2 2-4 0-7M26 14c-2-2 2-4 0-7"/>
+      </svg>
+      <span>Cafeteria<br>Pre-order</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+    </nav>
+    <div class="who">
+      <% if (currentUser) { %>
+        <span><%= currentUser.name %></span>
+        <span class="role"><%= currentUser.role %></span>
+        <form action="/logout" method="POST"><button class="btn btn-ghost">Log out</button></form>
+      <% } else { %>
+        <a class="btn btn-ghost" href="/login">Log in</a>
+        <a class="btn btn-primary" href="/register">Sign up</a>
+      <% } %>
+    </div>
+  </div>
+</header>
+<main>
+<% if (!locals.bare) { %><div class="wrap page"><% } %>
+<% if (flash) { %>
+  <div class="notice notice-<%= flash.type %>" role="status"><%= flash.text %></div>
+<% } %>
+<% if (errors && errors.length) { %>
+  <div class="notice notice-danger" role="alert">
+    <strong>Please fix this before continuing:</strong>
+    <ul><% errors.forEach(function(e){ %><li><%= e %></li><% }) %></ul>
+  </div>
+<% } %>

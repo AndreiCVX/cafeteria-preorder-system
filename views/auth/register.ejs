@@ -1,0 +1,38 @@
+<%- include('../partials/header', { title: 'Create account', bare: true }) %>
+<div class="auth">
+  <section class="auth-side">
+    <span class="hours">Open <%= hourLabel(openHour) %> to <%= hourLabel(closeHour) %></span>
+    <h1>Order before the break starts.</h1>
+    <p>Sign up with your name and email. Your orders and pickup times are saved to your account.</p>
+  </section>
+  <section class="auth-main">
+    <div class="auth-form">
+      <% if (errors && errors.length) { %>
+        <div class="notice notice-danger" role="alert"><ul><% errors.forEach(function(e){ %><li><%= e %></li><% }) %></ul></div>
+      <% } %>
+      <h2>Create your account</h2>
+      <form method="POST" action="/register" novalidate>
+        <div class="field">
+          <label for="name">Full name</label>
+          <input id="name" type="text" name="name" autocomplete="name" value="<%= old.name || '' %>" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" name="email" autocomplete="email" value="<%= old.email || '' %>" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" name="password" autocomplete="new-password" required>
+          <span class="hint">At least 8 characters.</span>
+        </div>
+        <div class="field">
+          <label for="confirmPassword">Confirm password</label>
+          <input id="confirmPassword" type="password" name="confirmPassword" autocomplete="new-password" required>
+        </div>
+        <button class="btn btn-dark btn-block">Create account</button>
+      </form>
+      <p class="alt">Already have an account? <a href="/login">Log in</a></p>
+    </div>
+  </section>
+</div>
+<%- include('../partials/footer', { bare: true }) %>

@@ -1,0 +1,30 @@
+<%- include('../partials/header', { title: 'Log in', bare: true }) %>
+<div class="auth">
+  <section class="auth-side">
+    <span class="hours">Open <%= hourLabel(openHour) %> to <%= hourLabel(closeHour) %></span>
+    <h1>Skip the line. Pick up your lunch.</h1>
+    <p>Choose your food from today's menu, set a pickup time, and collect it at the counter when it's ready.</p>
+  </section>
+  <section class="auth-main">
+    <div class="auth-form">
+      <% if (flash) { %><div class="notice notice-<%= flash.type %>" role="status"><%= flash.text %></div><% } %>
+      <% if (errors && errors.length) { %>
+        <div class="notice notice-danger" role="alert"><ul><% errors.forEach(function(e){ %><li><%= e %></li><% }) %></ul></div>
+      <% } %>
+      <h2>Log in</h2>
+      <form method="POST" action="/login" novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" name="email" autocomplete="email" value="<%= old.email || '' %>" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" name="password" autocomplete="current-password" required>
+        </div>
+        <button class="btn btn-dark btn-block">Log in</button>
+      </form>
+      <p class="alt">New here? <a href="/register">Create an account</a></p>
+    </div>
+  </section>
+</div>
+<%- include('../partials/footer', { bare: true }) %>

@@ -1,0 +1,7 @@
+<%- include('partials/header', { title: code + ' error' }) %>
+<div class="error-page">
+  <b><%= code %></b>
+  <p><%= message %></p>
+  <a href="/" class="btn btn-dark">Go to the home page</a>
+</div>
+<%- include('partials/footer') %>
