@@ -29,6 +29,10 @@
         <a href="/staff/orders" class="<%= path.indexOf('/staff/orders') === 0 ? 'on' : '' %>">Orders</a>
         <a href="/staff/menu" class="<%= path.indexOf('/staff/menu') === 0 ? 'on' : '' %>">Menu items</a>
       <% } %>
+      <% if (currentUser && currentUser.role === 'admin') { %>
+        <a href="/admin/users" class="<%= path.indexOf('/admin/users') === 0 ? 'on' : '' %>">Users</a>
+        <a href="/admin/reports" class="<%= path.indexOf('/admin/reports') === 0 ? 'on' : '' %>">Sales</a>
+      <% } %>
     </nav>
     <div class="who">
       <% if (currentUser) { %>

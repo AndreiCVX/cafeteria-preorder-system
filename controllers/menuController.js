@@ -14,7 +14,6 @@ exports.browse = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-
 // ----- Staff -----
 exports.manage = async (req, res, next) => {
   try {

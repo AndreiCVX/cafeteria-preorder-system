@@ -17,4 +17,3 @@ router.post('/staff/menu/:id/toggle', staff, menu.toggle);
 router.post('/staff/menu/:id/delete', staff, menu.remove);
 
 module.exports = router;
-module.exports = router;
