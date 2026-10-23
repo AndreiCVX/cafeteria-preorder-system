@@ -1,0 +1,39 @@
+<%- include('../partials/header', { title: 'Menu items' }) %>
+<div class="page-head">
+  <div><h1>Menu items</h1><p>Turn an item off when it sells out. It disappears from the customer menu right away.</p></div>
+  <a href="/staff/menu/new" class="btn btn-primary">Add menu item</a>
+</div>
+<% if (!items.length) { %>
+  <div class="empty"><h2>No menu items yet</h2><p>Add your first dish so customers can start ordering.</p></div>
+<% } else { %>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Item</th><th>Category</th><th>Price</th><th>On the menu</th><th>Actions</th></tr></thead>
+    <tbody>
+      <% items.forEach(function(i){ %>
+      <tr>
+        <td><strong><%= i.name %></strong><% if (i.description) { %><br><span class="muted small"><%= i.description %></span><% } %></td>
+        <td><%= i.category %></td>
+        <td><%= peso(i.price) %></td>
+        <td>
+          <form method="POST" action="/staff/menu/<%= i.id %>/toggle">
+            <button class="switch <%= i.is_available ? 'on' : '' %>" aria-pressed="<%= i.is_available ? 'true' : 'false' %>">
+              <span class="track-s"></span><%= i.is_available ? 'Available' : 'Sold out' %>
+            </button>
+          </form>
+        </td>
+        <td>
+          <div class="row-actions">
+            <a class="btn btn-ghost btn-sm" href="/staff/menu/<%= i.id %>/edit">Edit</a>
+            <form method="POST" action="/staff/menu/<%= i.id %>/delete" data-confirm="Delete <%= i.name %>? This cannot be undone.">
+              <button class="btn btn-danger btn-sm">Delete</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<% } %>
+<%- include('../partials/footer') %>
